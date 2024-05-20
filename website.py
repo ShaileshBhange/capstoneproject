@@ -11,6 +11,8 @@ model_directory = ""  # Replace with the actual directory path
 model_path = os.path.join(model_directory, "shape_predictor_68_face_landmarks.dat")
 
 # Load the model
+predictor = dlib.shape_predictor(model_path)
+detector = dlib.get_frontal_face_detector()
 
 st.title("Face Landmarks Streamlit App")
 
@@ -23,7 +25,7 @@ green_value = st.slider("Green", 0, 255, 0)
 blue_value = st.slider("Blue", 0, 255, 0)
 
 if uploaded_image is not None:
-    img = cv2.imdecode(np.fromstring(uploaded_image.read(), np.uint8), 1)
+    img = cv2.imdecode(np.frombuffer(uploaded_image.read(), np.uint8), 1)
     img = cv2.resize(img, (0, 0), None, 0.5, 0.5)
     finalimg = img.copy()
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -31,8 +33,6 @@ if uploaded_image is not None:
     st.image(img, caption="Original Image", use_column_width=True)
     st.image(imgGray, caption="Gray Image", use_column_width=True)
 
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(model_path)
     faces = detector(imgGray)
     landmarkspoints = []
 
